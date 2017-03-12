@@ -1,26 +1,43 @@
 /*
-´´½¨Ò»¸ö¼òµ¥µÄ±íÊ¾¾ØĞÎµÄRectangleÀà£¬Âú×ãÒÔÏÂÌõ¼ş£º
+åˆ›å»ºä¸€ä¸ªç®€å•çš„è¡¨ç¤ºçŸ©å½¢çš„Rectangleç±»ï¼Œæ»¡è¶³ä»¥ä¸‹æ¡ä»¶ï¼š
 
-£¨1£©¶¨ÒåÁ½¸ö³ÉÔ±±äÁ¿heightºÍwidth£¬±íÊ¾¾ØĞÎµÄ³¤ºÍ¿í£¬ÀàĞÍÎªÕûĞÍ 
-£¨2£©¶¨ÒåÒ»¸ögetArea·½·¨£¬·µ»Ø¾ØĞÎµÄÃæ»ı 
-£¨3£©¶¨ÒåÒ»¸ögetPerimeter·½·¨£¬·µ»Ø¾ØĞÎµÄÖÜ³¤ 
-£¨4£©ÔÚmainº¯ÊıÖĞ£¬ÀûÓÃÊäÈëµÄ2¸ö²ÎÊı·Ö±ğ×÷Îª¾ØĞÎµÄ³¤ºÍ¿í£¬µ÷ÓÃgetAreaºÍgetPermeter·½·¨£¬¼ÆËã²¢·µ»Ø¾ØĞÎµÄÃæ»ıºÍÖÜ³¤
+ï¼ˆ1ï¼‰å®šä¹‰ä¸¤ä¸ªæˆå‘˜å˜é‡heightå’Œwidthï¼Œè¡¨ç¤ºçŸ©å½¢çš„é•¿å’Œå®½ï¼Œç±»å‹ä¸ºæ•´å‹ 
+ï¼ˆ2ï¼‰å®šä¹‰ä¸€ä¸ªgetAreaæ–¹æ³•ï¼Œè¿”å›çŸ©å½¢çš„é¢ç§¯ 
+ï¼ˆ3ï¼‰å®šä¹‰ä¸€ä¸ªgetPerimeteræ–¹æ³•ï¼Œè¿”å›çŸ©å½¢çš„å‘¨é•¿ 
+ï¼ˆ4ï¼‰åœ¨mainå‡½æ•°ä¸­ï¼Œåˆ©ç”¨è¾“å…¥çš„2ä¸ªå‚æ•°åˆ†åˆ«ä½œä¸ºçŸ©å½¢çš„é•¿å’Œå®½ï¼Œè°ƒç”¨getAreaå’ŒgetPermeteræ–¹æ³•ï¼Œè®¡ç®—å¹¶è¿”å›çŸ©å½¢çš„é¢ç§¯å’Œå‘¨é•¿
 
- ÊäÈë£º
- ÊäÈë2¸öÕıÕûÊı£¬ÖĞ¼äÓÃ¿Õ¸ñ¸ô¿ª£¬·Ö±ğ×÷Îª¾ØĞÎµÄ³¤ºÍ¿í£¬ÀıÈç£º5 8
+ è¾“å…¥ï¼š
+ è¾“å…¥2ä¸ªæ­£æ•´æ•°ï¼Œä¸­é—´ç”¨ç©ºæ ¼éš”å¼€ï¼Œåˆ†åˆ«ä½œä¸ºçŸ©å½¢çš„é•¿å’Œå®½ï¼Œä¾‹å¦‚ï¼š5 8
 
- Êä³ö£º
- Êä³ö2¸öÕıÕûÊı£¬ÖĞ¼äÓÃ¿Õ¸ñ¸ô¿ª£¬·Ö±ğ±íÊ¾¾ØĞÎµÄÃæ»ıºÍÖÜ³¤£¬ÀıÈç£º40 26
+ è¾“å‡ºï¼š
+ è¾“å‡º2ä¸ªæ­£æ•´æ•°ï¼Œä¸­é—´ç”¨ç©ºæ ¼éš”å¼€ï¼Œåˆ†åˆ«è¡¨ç¤ºçŸ©å½¢çš„é¢ç§¯å’Œå‘¨é•¿ï¼Œä¾‹å¦‚ï¼š40 26
 */
-public class rectangle{
-	public static void main(String[] args){
-        
-        //»ñµÃ³¤ºÍ¿íµÄÊäÈë
-        Scanner input=new Scanner(System.in); 
-	String LW=input.nextLine();
-                  
- 	//½«ÊäÈëµÃµ½µÄ×Ö·û´®×ª»»Îª³¤ºÍ¿íµÄÊıÖµ
+package software.homework;
 
-        //Êä³öÃæ»ıºÍÖÜ³¤ 
+import java.util.Scanner;
+
+public class Rectangle 
+{
+	public static void main(String[] args)
+	{
+		Scanner input=new Scanner(System.in); 
+        String LW=input.nextLine();
+        String[] ints = LW.split(" ");
+        int L = Integer.parseInt(ints[0]);
+        int W = Integer.parseInt(ints[1]);   
+		getArea(L,W);
+		getPermeter(L,W);  
+	}
+	
+	public static void getArea(int L, int W) 
+	{
+		System.out.print("The area is: ");
+		System.out.println(L*W);
+	}
+	
+	public static void getPermeter(int L, int W)
+	{
+		System.out.print("The permeter is: ");
+		System.out.println(2*(L+W));
 	}
 }
