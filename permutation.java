@@ -1,13 +1,42 @@
 /*
-±àĞ´Ò»¸ö³ÌĞò£¬Êä³ö×Ö·û´®"abcdefgh"µÄÈ«ÅÅÁĞ¡££¨ÌáÊ¾£º¿É¿¼ÂÇµİ¹é£©
+ç¼–å†™ä¸€ä¸ªç¨‹åºï¼Œè¾“å‡ºå­—ç¬¦ä¸²"abcdefgh"çš„å…¨æ’åˆ—ã€‚ï¼ˆæç¤ºï¼šå¯è€ƒè™‘é€’å½’ï¼‰
 */
-public class permutation{
-	public static void main(String[] args){
-		char m;
-		char[] chars={'a','b','c'};
-		
-                //´òÓ¡charsµÄÈ«ÅÅÁĞ		
-		permutate(chars,0);
+package software.homework;
+
+public class Permutation
+{
+	public static void main(String[] args) 
+	{
+		permute(args, 0);
 	}
-			
+	
+	public static void swap(String[] ob, int m, int n) 
+	{
+		String temp = ob[m];
+		ob[m] = ob[n];
+		ob[n] = temp;
+	}
+	
+	public static void print(String[] ob) 
+	{
+		for(int i = 0; i < ob.length; i++)
+		System.out.print(ob[i]);
+		System.out.print("\n");
+	}
+	
+	public static void permute(String[] ob, int start)
+	{
+		if(start == ob.length)
+		{
+			print(ob);
+		}
+		else
+		for(int i = start; i < ob.length; i++)
+		{
+	
+			swap(ob, start, i);
+			permute(ob, start+1);
+			swap(ob, start, i);			
+		}		
+	}
 }
