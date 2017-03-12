@@ -1,11 +1,18 @@
 /*
-编写一个程序，计算自然数n的阶乘n!。（提示：可用循环完成）
+缂栧啓涓�涓▼搴忥紝璁＄畻鑷劧鏁皀鐨勯樁涔榥!銆傦紙鎻愮ず锛氬彲鐢ㄥ惊鐜畬鎴愶級
 */
-public class factorial{
-	 public static void main(String[] args){
-         //将args[0]转换为阶数n
-         
-         //循环计算n!，返回结果
-	 	 
+package software.homework;
+
+public class Factorial 
+{
+	public static void main(String[] args)
+	{
+        
+		int n = Integer.parseInt(args[0]);
+		for(int i=n-1; i>0; i--)
+		{
+			n = n * i;	
+		}
+		System.out.println(n);
 	}
 }
