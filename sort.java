@@ -1,15 +1,34 @@
 /*
-ÓÃJava±àĞ´Ò»¸öÄÜ¶ÔÊı×é±È½ÏµÄ³ÌĞò£¬ĞèÒªÊä³ö°´ĞĞÉıĞòÅÅĞòµÄ½á¹û ÈçÊäÈë
+ç”¨Javaç¼–å†™ä¸€ä¸ªèƒ½å¯¹æ•°ç»„æ¯”è¾ƒçš„ç¨‹åºï¼Œéœ€è¦è¾“å‡ºæŒ‰è¡Œå‡åºæ’åºçš„ç»“æœ å¦‚è¾“å…¥
 1 2 5 4 8
-Êä³ö£º
+è¾“å‡ºï¼š
 1 2 4 5 8
-ÒªÇó£ºÊı×éÊÇÍ¨¹ısort³ÌĞòµÄ²ÎÊıÊäÈë¡£
+è¦æ±‚ï¼šæ•°ç»„æ˜¯é€šè¿‡sortç¨‹åºçš„å‚æ•°è¾“å…¥ã€‚
 */
-public class sort{
-	 public static void main(String[] args){
-         //½«args×ª»»ÎªintÊı×é
-         
-         //¶ÔintÊı×éÅÅĞòºóÊä³ö½á¹û
-	 	 
+package software.homework;
+
+public class Sort 
+{
+	public static void main (String[] args) 
+	{
+		int A[] = new int[args.length];
+		for (int i = 0; i < args.length; i++)
+			A[i] = Integer.parseInt(args[i]);
+		
+		for(int n = 1; n < args.length; n++) 
+		{
+			for (int m = 0; m < (args.length - n); m++) 
+			{
+				if(A[m] > A[m+1]) 
+				{
+					int b = A[m+1];
+					A[m+1] = A[m];
+					A[m] = b;
+				}
+			}
+		}
+		
+		for (int k=0; k < args.length; k++)
+			System.out.println(A[k]);
 	}
 }
