@@ -1,3 +1,6 @@
+package software.homework;
+import java.io.*;
+
 /*
    编写程序读取科目表文件,在内存中建立科目树, 并遍历科目树中每个科目对象,序列化到磁盘上。
    （1）从文件中读取科目表，包括两种编码格式（一种是固定编码格式，一种是动态编码格式）
@@ -15,7 +18,7 @@ public class AccountTree
 	public static void main(String[] args) 
 	{
 		//读入&序列化两个科目文件
-    readAccount("固定科目.txt");
+		readAccount("固定科目.txt");
 		serialize("Accounts.ser");
 		readAccount("动态科目.txt");
 		serialize("Accounts.ser");
@@ -35,12 +38,15 @@ public class AccountTree
 			int i = 0;  //用于循环
 			while((line = br.readLine()) != null) 
 			{
-				String acc_number = line.split(" ")[0];   //科目代码（acc_number）和科目名称（acc_name）是用空格分开的
+				String acc_number = line.split(" ")[0];  //科目代码（acc_number）和科目名称（acc_name）是用空格分开的
 				String acc_name = new String(line.split(" ")[1]);
-				accounts[i] = new Account(acc_number, acc_name);	  //将读入的每个科目装入accounts的一个位置
+				accounts[i] = new Account(acc_number, acc_name);  //将读入的每个科目装入accounts的一个位置
+				//打印一下看看对不对
+				System.out.println(accounts[i].getAcc_name() + " " + accounts[i].getAcc_number());
 				i = i + 1;
 			}
 			br.close();
+			System.out.println("--------------------------------------");
 		} catch (IOException ex) {
 			System.out.println(ex);
 		} 
