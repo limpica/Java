@@ -25,7 +25,7 @@ public class AccountTree
 	}
 	
  
- //读数据到accounts[] 
+	//读数据到accounts[] 
 	public static void readAccount(String filename) 
 	{
 		try 
@@ -47,7 +47,9 @@ public class AccountTree
 			}
 			br.close();
 			System.out.println("--------------------------------------");
-		} catch (IOException ex) {
+		} 
+		catch (IOException ex) 
+		{
 			System.out.println(ex);
 		} 
 	}
@@ -68,12 +70,12 @@ public class AccountTree
 				i = i + 1;
 			}
 			output.close();
-
-		} catch (IOException ex) {
+		} 
+		catch (IOException ex) 
+		{
 			System.out.print(ex);
 		}
 	}
-	
 }
 
 
