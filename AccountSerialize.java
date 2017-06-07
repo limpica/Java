@@ -1,5 +1,6 @@
 package software.homework;
 import java.io.*;
+import java.util.ArrayList;
 
 /*
 编写程序读取科目表文件,在内存中建立科目树, 并遍历科目树中每个科目对象,序列化到磁盘上。
@@ -13,126 +14,83 @@ import java.io.*;
 */
 
 
-public class AccountSerialize
-{
-static Account[] accounts = new Account[10000]; //建立科目树
-	
-	public static void main(String[] args) 
-	{
-		//读入&序列化&反序列化两个科目文件
-		readAccount("固定科目.txt");
+
+public class AccountSerialize {
+	static ArrayList<software.homework.Account> accounts = new ArrayList<Account>(); // 建立科目树
+
+	public static void main(String[] args) {
+		// 读入&序列化&反序列化两个科目文件
+		readAccountFromTxt("固定科目.txt");
 		serialize("Accounts.ser");
 		deserialize("Accounts.ser");
-		readAccount("动态科目.txt");
+		readAccountFromTxt("动态科目.txt");
 		serialize("Accounts.ser");
 		deserialize("Accounts.ser");
 	}
-	
-	
-	//读数据到accounts[] 
-	public static void readAccount(String filename) 
-	{
-		try 
-		{
-			accounts = new Account[10000];  //每次将account读入accounts[]前，都先将其清空
-			BufferedReader br = new BufferedReader(
-					new FileReader("C:/Users/Miao Yi/Java/projects/src/software/experiment/"+filename));
+
+	// 读数据到arraylist accounts
+	public static void readAccountFromTxt(String filename) {
+		try {
 			
-			String line;  //循环存储读入的一行的内容
-			int i = 0;  //用于循环
-			while((line = br.readLine()) != null) 
-			{
-				String acc_number = line.split(" ")[0];  //科目代码（acc_number）和科目名称（acc_name）是用空格分开的
+			BufferedReader br = new BufferedReader(
+					new FileReader("C:/Users/Miao Yi/Java/projects/src/software/homework/" + filename));
+
+			String line; // 循环存储读入的一行的内容
+			
+			accounts.clear(); // 每次读入前先把之前的清空一遍
+
+			while ((line = br.readLine()) != null) {
+				String acc_number = line.split(" ")[0]; // 科目代码（acc_number）和科目名称（acc_name）是用空格分开的
 				String acc_name = new String(line.split(" ")[1]);
-				accounts[i] = new Account(acc_number, acc_name);  //将读入的每个科目装入accounts的一个位置
-				i = i + 1;
+				//不确定读入结果是不是正确，可以打印一下
+				//System.out.println(acc_number+ " " + acc_name);
+				accounts.add(new Account(acc_number, acc_name));
 			}
 			br.close();
-			System.out.println(filename + "的数据读取成功！");
+
 		} catch (IOException ex) {
 			System.out.println("1: " + ex);
-		} 
+		}
 	}
-	
-	
-	public static void serialize(String filename)
-	{
-		try 
-		{
-			//序列化
+
+	public static void serialize(String filename) {
+		try {
+			// 序列化
 			ObjectOutputStream output = new ObjectOutputStream(
-					new FileOutputStream("C:/Users/Miao Yi/Java/projects/src/software/experiment/" + filename));
+					new FileOutputStream("C:/Users/Miao Yi/Java/projects/src/software/homework/" + filename));
 			Account account;
-			int i = 0;
-			while(accounts[i] != null)
-			{
-				account = accounts[i];
+			for (int i = 0; i < accounts.size(); i++) {
+				account = (Account) accounts.get(i);
 				output.writeObject(account);
-				i = i + 1;
 			}
 			output.close();
-			System.out.println("序列化到" + filename + "成功！");
-		} 
-		catch (IOException ex) 
-		{
+		} catch (IOException ex) {
 			System.out.print("2: " + ex);
 		}
 	}
-	
-	
-	public static void deserialize(String filename)
-	{
-		//反序列化
-		try 
-		{
-			accounts = new Account[10000];  //每次将account读入accounts[]前，都先将其清空
+
+	public static void deserialize(String filename) {
+		// 反序列化
+		try {
 			ObjectInputStream input = new ObjectInputStream(
-					new FileInputStream(new File("C:/Users/Miao Yi/Java/projects/src/software/experiment/" + filename)));
-			Account account;
-			int i = 0;
-			while((account =(Account) input.readObject()) != null)
-			{
-				accounts[i] =account;
-				//打印检查
-				System.out.println(accounts[i].getAcc_number() + " " + accounts[i].getAcc_name());
-				i = i + 1;
+					new FileInputStream(new File("C:/Users/Miao Yi/Java/projects/src/software/homework/" + filename)));
+
+			int size = accounts.size(); // 保存一下accounts的size，这是反序列化的长度
+			accounts.clear(); // 重新读入accounts前清空一下
+			for (int m = 0; m < size; m++) {
+				accounts.add((Account) input.readObject());
+				//不确定反序列化是不是正确，可以打印一下
+				//System.out.println(((Account)accounts.get(m)).getAcc_number() + ((Account)accounts.get(m)).getAcc_name() );
 			}
 			input.close();
-			System.out.println("反序列化文件" + filename + "成功！");
-		} 
-		catch (FileNotFoundException ex) 
-		{
+
+		} catch (FileNotFoundException ex) {
 			System.out.println("3: " + ex);
-		} 
-		catch (IOException ex) 
-		{
-			System.out.println("4: " + ex);
-		}
-		catch (ClassNotFoundException ex) 
-		{
+		} catch (IOException ex) {
+			System.out.print("4: " + ex);
+		} catch (ClassNotFoundException ex) {
 			System.out.println("5: " + ex);
 		}
 	}
 }
 
-
-class Account implements Serializable {
-	private String acc_number;
-	private String acc_name;
-	public Account(String acc_number, String acc_name) {
-		this.setAcc_number(acc_number);
-		this.setAcc_name(acc_name);
-	}
-	public String getAcc_number() {
-		return acc_number;
-	}
-	public void setAcc_number(String acc_number) {
-		this.acc_number = acc_number;
-	}
-	public String getAcc_name() {
-		return acc_name;
-	}
-	public void setAcc_name(String acc_name) {
-		this.acc_name = acc_name;
-	}
-}
