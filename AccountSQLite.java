@@ -90,7 +90,6 @@ public class AccountSQLite {
 				String id = account.getAcc_number();
 				String name = account.getAcc_name();
 				String sql = "INSERT INTO ACCOUNTS VALUES ('" + (String) id + "' , '" + name + "');";
-				i = i + 1;
 				stmt.executeUpdate(sql);
 			}
 			stmt.close();
