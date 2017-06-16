@@ -33,10 +33,16 @@ class Account implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String acc_number;
 	private String acc_name;
+	private String acc_entry;
+	private String acc_def;
+	
 
-	public Account(String acc_number, String acc_name) {
+	public Account(String acc_number, String acc_name, String acc_def, String acc_entry) {
 		this.setAcc_number(acc_number);
 		this.setAcc_name(acc_name);
+		this.setAcc_entry(acc_entry);
+		this.setAcc_def(acc_def);
+		
 	}
 
 	public String getAcc_number() {
@@ -53,5 +59,21 @@ class Account implements Serializable {
 
 	public void setAcc_name(String acc_name) {
 		this.acc_name = acc_name;
+	}
+	
+	public String getAcc_entry() {
+		return acc_entry;
+	}
+
+	public void setAcc_entry(String acc_entry) {
+		this.acc_entry = acc_entry;
+	}
+
+	public String getAcc_def() {
+		return acc_def;
+	}
+
+	public void setAcc_def(String acc_def) {
+		this.acc_def = acc_def;
 	}
 }
