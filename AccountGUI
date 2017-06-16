@@ -1,0 +1,375 @@
+//半成品，只能删科目，而且删掉的科目无法实时刷新进科目树里。
+
+package software.homework;
+
+import java.awt.*;
+
+import java.awt.event.*;
+import java.sql.*;
+import java.util.ArrayList;
+
+import javax.swing.*;
+import javax.swing.tree.*;
+
+import software.homework.AccountSQLite;
+
+
+
+public class AccountGUI extends JFrame {
+
+	public static JTree tree;
+	public static DefaultMutableTreeNode top = new DefaultMutableTreeNode("科目树");
+	public static JTextField jtf;
+	public static JTextField t1, t2, t3;
+	public static JTextArea t4;
+	public static Container contant = new Container();
+	int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+	int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+	
+	
+	//树结构里循环使用的
+	// 第1层循环使用：4位科目
+	String id1;
+	String name1;
+	String entry1;
+	String def1;
+	Account account1;
+	DefaultMutableTreeNode child;
+
+	// 第2层循环使用：6位科目
+	String id2;
+	String name2;
+	String entry2;
+	String def2;
+	Account account2;
+	DefaultMutableTreeNode grandChild;
+
+	// 第3层循环使用：8位科目
+	String id3;
+	String name3;
+	String entry3;
+	String def3;
+	Account account3;
+	DefaultMutableTreeNode greatGrandChild;
+
+	
+
+	static ArrayList<Account> accounts = new ArrayList<Account>(); // 建立科目树
+
+	public static void readAccountFromDb(String dbname) {
+		try {
+			Class.forName("org.sqlite.JDBC");// 注册driver
+			Connection c = DriverManager
+					.getConnection("jdbc:sqlite:C:/Users/Miao Yi/Java/projects/src/software/homework/" + dbname);
+
+			Statement stmt = c.createStatement();
+			// 从.db文件中读取数据
+			ResultSet rs = stmt.executeQuery("SELECT * FROM ACCOUNTS;");
+			while (rs.next()) {
+				Account account = new Account(rs.getString("ID"), rs.getString("NAME"), rs.getString("ENTRY"),
+						rs.getString("DEFINATION"));
+				accounts.add(account);
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (SQLException | ClassNotFoundException ex) {
+			System.out.println(ex);
+		}
+	}
+
+	public void initTree() {
+		readAccountFromDb("Accounts.db");
+		int countChildren;
+		int countGrandChildren;
+		
+		if (top.isLeaf() == false) 
+            top.removeAllChildren();
+
+		// 三层嵌套循环去判断一个科目代码究竟属于树的哪一级。方法比较笨，灵活性不好，不能直接用于高于3层的科目树。
+		int size = accounts.size();
+
+		// 第一层循环，添加4位科目
+		countChildren = 0;
+		for (int i = 0; i < size; i++) {
+			account1 = accounts.get(i);
+			id1 = account1.getAcc_number();
+			name1 = account1.getAcc_name();
+			entry1 = account1.getAcc_entry();
+			def1 = account1.getAcc_def();
+
+			if (id1.length() == 4) {
+				child = new DefaultMutableTreeNode(id1 + " " + name1);
+				top.add(child);
+				countChildren = countChildren + 1;
+
+				// 第二层循环，添加6位科目
+				// 循环到某一个4位科目，停下来，循环6位的科目，如果前4位数字和4科目一样，就是子科目
+				countGrandChildren = 0;
+				for (int j = 0; j < size; j++) {
+					account2 = accounts.get(j);
+					id2 = account2.getAcc_number();
+					name2 = account2.getAcc_name();
+					entry2 = account2.getAcc_entry();
+					def2 = account2.getAcc_def();
+
+					if (id2.length() == 6 && id2.substring(0, 4)
+							.equals(top.getChildAt(countChildren - 1).toString().substring(0, 4))) {
+						grandChild = new DefaultMutableTreeNode(id2 + " " + name2);
+						child.add(grandChild);
+						countGrandChildren = countGrandChildren + 1;
+
+						// 第三层循环，添加8位科目
+						// 循环到某一个6位科目，停下来，循环8位的科目，如果前6位数字和6科目一样，就是子科目
+						for (int k = 0; k < size; k++) {
+							account3 = accounts.get(k);
+							id3 = account3.getAcc_number();
+							name3 = account3.getAcc_name();
+							entry3 = account3.getAcc_entry();
+							def3 = account3.getAcc_def();
+							
+							
+							//System.out.println("top " + top.getChildCount() + "|" + "child " + top.getChildAt(countChildren-1).getChildCount());
+						//	System.out.println(countGrandChildren);
+							if (id3.length() == 8 && id3.substring(0, 6).equals(top.getChildAt(countChildren - 1)
+									.getChildAt(countGrandChildren - 1).toString().substring(0, 6))) {
+								greatGrandChild = new DefaultMutableTreeNode(id3 + " " + name3);
+								grandChild.add(greatGrandChild);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		tree = new JTree(top);
+		jtf = new JTextField("", 20);
+
+		// tree的事件
+		tree.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent me) {
+				doMouseClicked(me);
+			}
+		});
+
+		tree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+			public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+				jTreeValueChanged(evt);
+			}
+		});
+	}
+
+	public void init() {
+
+		// 创建contant：显示科目代码、科目名称、借贷方向和定义
+		JLabel l1 = new JLabel("科目代码:   ");
+		JButton createAccount = new JButton("新建科目");
+		JPanel p1 = new JPanel();
+		JLabel l2 = new JLabel("科目名称:   ");
+		JButton saveAccount = new JButton("保存科目");
+		JPanel p2 = new JPanel();
+		JLabel l3 = new JLabel("借贷方向:   ");
+		JPanel p3 = new JPanel();
+		JLabel l4 = new JLabel("定义:   ");
+		JButton deleteAccount = new JButton("删除科目");
+		JPanel p4 = new JPanel();
+
+		contant.add(l1);
+		t1 = new JTextField(10);
+		contant.add(t1);
+		contant.add(createAccount);
+		contant.add(p1);
+		contant.add(l2);
+		t2 = new JTextField(10);
+		contant.add(t2);
+		contant.add(saveAccount);	
+		contant.add(p2);
+		contant.add(l3);
+		t3 = new JTextField(10);
+		contant.add(t3);
+		contant.add(p3);
+		contant.add(l4);
+		t4 = new JTextArea(13, 18);
+		t4.setLineWrap(true);
+		contant.add(t4);
+		contant.add(deleteAccount);
+		contant.add(p4);
+		
+		
+
+		// 三个button的事件
+		createAccount.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent me) {
+				t1.setText("");
+				t2.setText("");
+				t3.setText("");
+				t4.setText("");
+			}
+		});
+
+		deleteAccount.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent me) {
+				try {
+					int sizeHere = accounts.size();
+					for (int i = 0; i < sizeHere; i++) {
+						String delAcc = accounts.get(i).getAcc_number();
+
+						if (t1.getText().equals(delAcc)) {
+							
+							Class.forName("org.sqlite.JDBC");// 注册driver
+							Connection c = DriverManager.getConnection(
+									"jdbc:sqlite:C:/Users/Miao Yi/Java/projects/src/software/homework/Accounts.db");
+							Statement stmt = c.createStatement();
+							// 从.db文件中删除
+							stmt.execute("DELETE FROM ACCOUNTS WHERE ID = " + delAcc + ";");
+							System.out.println(top.getLeafCount());
+							System.out.println(top.getChildCount());
+							stmt.close();
+							c.close();
+							}
+						}				
+				} catch (SQLException | ClassNotFoundException ex) {
+					System.out.println(ex);
+				}//无法刷新
+			}
+		});
+
+		// 布局contant
+		GridBagLayout layout = new GridBagLayout();
+		GridBagConstraints s = new GridBagConstraints();
+
+		contant.setLayout(layout);
+
+		s.anchor = GridBagConstraints.EAST;
+
+		s.gridx = 0;
+		s.gridy = 0;
+		layout.setConstraints(l1, s);
+
+		s.gridx = 1;
+		s.gridy = 0;
+		layout.setConstraints(t1, s);
+
+		s.gridx = 0;
+		s.gridy = 1;
+		layout.setConstraints(p1, s);
+
+		s.gridx = 0;
+		s.gridy = 2;
+		layout.setConstraints(l2, s);
+
+		s.gridx = 1;
+		s.gridy = 2;
+		layout.setConstraints(t2, s);
+
+		s.gridx = 0;
+		s.gridy = 3;
+		layout.setConstraints(p2, s);
+
+		s.gridx = 0;
+		s.gridy = 4;
+		layout.setConstraints(l3, s);
+
+		s.gridx = 1;
+		s.gridy = 4;
+		layout.setConstraints(t3, s);
+
+		s.gridx = 0;
+		s.gridy = 5;
+		layout.setConstraints(p3, s);
+
+		s.gridx = 0;
+		s.gridy = 6;
+		layout.setConstraints(l4, s);
+
+		s.gridx = 1;
+		s.gridy = 6;
+		s.gridwidth = 2;
+		layout.setConstraints(t4, s);
+
+		s.gridx = 0;
+		s.gridy = 7;
+		layout.setConstraints(p4, s);
+
+		s.anchor = GridBagConstraints.WEST;
+		s.gridx = 2;
+		s.gridy = 0;
+		layout.setConstraints(createAccount, s);
+
+		s.gridx = 2;
+		s.gridy = 2;
+		layout.setConstraints(saveAccount, s);
+
+		s.gridx = 2;
+		s.gridy = 4;
+		layout.setConstraints(deleteAccount, s);
+
+		// 创建最高层组件：新建科目按钮，删除科目按钮，占位区域，树区域，内容区域
+
+		JScrollPane treeView = new JScrollPane(tree, v, h);
+		add(treeView);
+		add(contant);
+
+		// 设置最高层布局
+		layout = new GridBagLayout();
+		s = new GridBagConstraints();
+		setLayout(layout);
+
+		s.fill = GridBagConstraints.BOTH;
+
+		s.gridx = 0;
+		s.gridy = 0;
+		s.weightx = 1;
+		s.weighty = 1;
+		layout.setConstraints(treeView, s);
+
+		s.gridx = 1;
+		s.gridy = 0;
+		s.weightx = 0.8;
+		s.weighty = 1;
+		layout.setConstraints(contant, s);
+
+	}
+
+	// tree的method
+	public void doMouseClicked(MouseEvent me) {
+		TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
+		if (tp != null)
+			jtf.setText(tp.toString());
+		else
+			jtf.setText("");
+	}
+
+	private void jTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {
+		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();// 返回最后选定的节点
+		int size = accounts.size();
+		for (int i = 0; i < size; i++) {
+			String id = accounts.get(i).getAcc_number();
+			if (selectedNode.toString().split(" ")[0].equals(id)) {
+				t1.setText(accounts.get(i).getAcc_number());
+				t2.setText(accounts.get(i).getAcc_name());
+				t3.setText(accounts.get(i).getAcc_entry());
+				t4.setText(accounts.get(i).getAcc_def());
+			}
+		}
+	}
+
+	
+
+	public AccountGUI() {
+	//	readAccountFromDb("Accounts.db");
+		initTree();
+		init();
+		this.setSize(700, 450);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("科目树");
+
+	}
+
+	public static void main(String args[]) {
+		AccountGUI accounts = new AccountGUI();
+
+	}
+
+}
